@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+import json
+
 import requests
 
 from bs4 import BeautifulSoup
@@ -35,3 +37,8 @@ def get_menu_week(link):
             menu[weekday].update({dish_type: dish})
 
     return menu
+
+
+def load_menu_from_json(canteen):
+    with open(canteen.lower() + ".json") as f:
+        return json.load(f)
