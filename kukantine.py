@@ -7,6 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
+# Below canteens will be scraped by default by scrape.py
 CANTEENS = {
     "BioC": "https://www.biocenter.ku.dk/kantine/menuoversigt/",
     "AKB": "https://www1.bio.ku.dk/akb/kantine/menuoversigt/"
