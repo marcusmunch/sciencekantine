@@ -18,10 +18,8 @@ def get_motd(canteen, debug=False, sep=", "):
 
         menu = kukantine.load_menu_from_json(canteen)
 
-    print(menu)
-
     try:
-        motd = menu[today_weekday]
+        motd = {k: v for k, v in menu[today_weekday].items() if v}
 
     except IndexError:
         print("An error occured. This might be because it's the weekend today.")
