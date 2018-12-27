@@ -1,10 +1,13 @@
 #!/usr/bin/python3
 
+import json
+
 import requests
 
 from bs4 import BeautifulSoup
 
 
+# Below canteens will be scraped by default by scrape.py
 CANTEENS = {
     "BioC": "https://www.biocenter.ku.dk/kantine/menuoversigt/",
     "AKB": "https://www1.bio.ku.dk/akb/kantine/menuoversigt/"
@@ -35,3 +38,8 @@ def get_menu_week(link):
             menu[weekday].update({dish_type: dish})
 
     return menu
+
+
+def load_menu_from_json(canteen):
+    with open(canteen.lower() + ".json") as f:
+        return json.load(f)

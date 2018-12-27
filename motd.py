@@ -1,34 +1,48 @@
 import datetime
+import sys
 
 from argparse import ArgumentParser
 
 import kukantine
 
 
-def motd(sep=", "):
+def get_motd(args):
     today_weekday = datetime.datetime.today().weekday()
 
+    if args.l:
+        menu = kukantine.load_menu_from_json(args.canteen)
+    else:
+        menu = kukantine.get_menu_week(args.canteen)
+
+    if args.d:
+        if today_weekday > 4:
+            today_weekday = 0
+
+    try:
+        motd = {k: v for k, v in menu[today_weekday].items() if v}
+
+    except IndexError:
+        print("Weekday is out of range (e.g. it's the weekend).")
+        sys.exit(1)
+
+    if not args.separator:
+        args.separator = ", "
+
+    menu_string = args.separator.join(["%s: %s" % (k, v) for k, v in motd.items()])
+
+    return menu_string
+
+
+def main():
     parser = ArgumentParser()
     parser.add_argument("-s", "--separator", help="String to use for separation of the different menu items. "
                                                   "Defaults to \", \".")
     parser.add_argument("canteen", help="Enter canteen for which menu is wanted")
+    parser.add_argument("-l", help="Local mode - load from local files.", action="store_true")
     parser.add_argument("-d", help="Debug mode", action="store_true")
     args = parser.parse_args()
 
-    if not args.d:
-        menu = kukantine.get_menu_week(args.canteen)
-    else:
-        import json
-        with open(args.canteen.lower() + ".json") as f:
-            menu = json.load(f)[args.canteen]
-
-    motd = menu[today_weekday]
-
-    return sep.join(["%s: %s" % (k, v) for k, v in motd.items()])
-
-
-def main():
-    print(motd())
+    print(get_motd(args))
 
 
 if __name__ == "__main__":
