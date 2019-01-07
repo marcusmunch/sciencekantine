@@ -13,8 +13,8 @@ def get_menu_week(link):
     import requests
     from bs4 import BeautifulSoup
 
-    if link in CANTEENS.keys():
-        link = CANTEENS[link]
+    if link.lower() in CANTEENS.keys():
+        link = CANTEENS[link.lower()]
 
     r = requests.get(link)
     soup = BeautifulSoup(r.text, "html.parser")
