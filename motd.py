@@ -6,26 +6,31 @@ from argparse import ArgumentParser
 import kukantine
 
 
-def get_motd(canteen, debug=False, sep=", "):
+def get_motd(args):
     today_weekday = datetime.datetime.today().weekday()
 
-    if not debug:
-        menu = kukantine.get_menu_week(canteen)
-
+    if args.l:
+        menu = kukantine.load_menu_from_json(args.canteen)
     else:
-        if today_weekday > 4:
-            today_weekday = 4
+        menu = kukantine.get_menu_week(args.canteen)
 
-        menu = kukantine.load_menu_from_json(canteen)
+    if args.d:
+        if today_weekday > 4:
+            today_weekday = 0
 
     try:
         motd = {k: v for k, v in menu[today_weekday].items() if v}
 
     except IndexError:
-        print("An error occured. This might be because it's the weekend today.")
+        print("Weekday is out of range (e.g. it's the weekend).")
         sys.exit(1)
 
-    return sep.join(["%s: %s" % (k, v) for k, v in motd.items()])
+    if not args.separator:
+        args.separator = ", "
+
+    menu_string = args.separator.join(["%s: %s" % (k, v) for k, v in motd.items()])
+
+    return menu_string
 
 
 def main():
@@ -33,15 +38,11 @@ def main():
     parser.add_argument("-s", "--separator", help="String to use for separation of the different menu items. "
                                                   "Defaults to \", \".")
     parser.add_argument("canteen", help="Enter canteen for which menu is wanted")
+    parser.add_argument("-l", help="Local mode - load from local files.", action="store_true")
     parser.add_argument("-d", help="Debug mode", action="store_true")
     args = parser.parse_args()
 
-    if args.d:
-        debug = True
-    else:
-        debug = False
-
-    print(get_motd(args.canteen, debug=debug))
+    print(get_motd(args))
 
 
 if __name__ == "__main__":

@@ -2,21 +2,19 @@
 
 import json
 
-import requests
-
-from bs4 import BeautifulSoup
-
-
 # Below canteens will be scraped by default by scrape.py
 CANTEENS = {
-    "BioC": "https://www.biocenter.ku.dk/kantine/menuoversigt/",
-    "AKB": "https://www1.bio.ku.dk/akb/kantine/menuoversigt/"
+    "bioc": "https://www.biocenter.ku.dk/kantine/menuoversigt/",
+    "akb": "https://www1.bio.ku.dk/akb/kantine/menuoversigt/"
 }
 
 
 def get_menu_week(link):
-    if link in CANTEENS.keys():
-        link = CANTEENS[link]
+    import requests
+    from bs4 import BeautifulSoup
+
+    if link.lower() in CANTEENS.keys():
+        link = CANTEENS[link.lower()]
 
     r = requests.get(link)
     soup = BeautifulSoup(r.text, "html.parser")
