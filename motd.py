@@ -14,9 +14,14 @@ def get_motd(args):
     else:
         menu = kukantine.get_menu_week(args.canteen)
 
+    if args.t:
+        today_weekday += args.t
     if args.d:
         if today_weekday > 4:
             today_weekday = 0
+    if today_weekday > 4:
+        print("Error: Couldn't find menu for given day")
+        exit(1)
 
     try:
         motd = {k: v for k, v in menu[today_weekday].items() if v}
@@ -40,6 +45,7 @@ def main():
     parser.add_argument("canteen", help="Enter canteen for which menu is wanted")
     parser.add_argument("-l", help="Local mode - load from local files.", action="store_true")
     parser.add_argument("-d", help="Debug mode", action="store_true")
+    parser.add_argument("-t", help="Get menu a number of days from today (e.g. 1 for tomorrow)", type=int)
     args = parser.parse_args()
 
     print(get_motd(args))
