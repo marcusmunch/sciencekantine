@@ -22,14 +22,14 @@ def get_motd(args):
         if today_weekday > 4:
             today_weekday = 0
     if today_weekday > 4:
-        print("Error: Couldn't find menu for given day")
+        sys.stderr.write("Error: Couldn't find menu for given day\n")
         exit(1)
 
     try:
         motd = {k: v for k, v in menu[today_weekday].items() if v}
 
     except IndexError:
-        print("Weekday is out of range (e.g. it's the weekend).")
+        sys.stderr.write("Weekday is out of range (e.g. it's the weekend).")
         sys.exit(1)
 
     if not args.separator:
